@@ -280,8 +280,8 @@ button {
 }
 
 /* shiki dual-theme via CSS variables */
-.shiki,
-.shiki span {
+.astro-code,
+.astro-code span {
   color: var(--shiki-light);
   background-color: var(--shiki-light-bg);
   font-style: var(--shiki-light-font-style);
@@ -289,8 +289,8 @@ button {
   text-decoration: var(--shiki-light-text-decoration);
 }
 
-html[data-theme='dark'] .shiki,
-html[data-theme='dark'] .shiki span {
+html[data-theme='dark'] .astro-code,
+html[data-theme='dark'] .astro-code span {
   color: var(--shiki-dark);
   background-color: var(--shiki-dark-bg);
   font-style: var(--shiki-dark-font-style);
