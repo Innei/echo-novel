@@ -236,7 +236,7 @@ def make_og(base: Image.Image):
     tag = font(GEORGIA, 32)
     d.text((MARGIN, 420), "A novel of a programmer and an AI in 2010.", fill=INK, font=tag)
     tag_cn = font(SONGTI, 24, index=0)
-    d.text((MARGIN, 466), "二〇一〇年的深夜，他遇见了一个不属于时代的回声。", fill=MUTE, font=tag_cn)
+    d.text((MARGIN, 466), "2010 年的深夜，他遇见了一个不属于时代的回声。", fill=MUTE, font=tag_cn)
 
     # bottom rule
     by = H - 96
