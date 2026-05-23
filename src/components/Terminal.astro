@@ -1,0 +1,117 @@
+---
+const lines: Array<{ prompt?: string; text: string; color?: string }> = [
+  { prompt: '~', text: 'cat ./echo/README.md' },
+  { text: '' },
+  { text: '2010 年的秋天，一个普通的大一新生' },
+  { text: '在装 Arch 的某个深夜里，遇见了 Echo。' },
+  { text: '' },
+  { text: '这是一个关于他、关于 AI、' },
+  { text: '关于"一个人能走多远"的故事。' },
+  { text: '' },
+  { prompt: '~', text: 'echo --read', color: 'accent' },
+];
+---
+
+<div class="terminal">
+  <div class="term-bar">
+    <span class="dot red"></span>
+    <span class="dot yellow"></span>
+    <span class="dot green"></span>
+    <span class="term-title mono">echo@arch — ~/echo</span>
+  </div>
+  <div class="term-body mono">
+    {
+      lines.map((l) => (
+        <div class="term-line">
+          {l.prompt && (
+            <>
+              <span class="term-prompt">innei@arch</span>
+              <span class="term-sep">:</span>
+              <span class="term-cwd">{l.prompt}</span>
+              <span class="term-sep">$ </span>
+            </>
+          )}
+          <span class={l.color === 'accent' ? 'term-text accent' : 'term-text'}>{l.text}</span>
+        </div>
+      ))
+    }
+    <div class="term-line">
+      <span class="term-prompt">innei@arch</span>
+      <span class="term-sep">:</span>
+      <span class="term-cwd">~</span>
+      <span class="term-sep">$ </span>
+      <span class="term-cursor"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .terminal {
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    background: var(--bg-elev);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-family: var(--font-mono);
+  }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot.red { background: #ff5f57; }
+  .dot.yellow { background: #febc2e; }
+  .dot.green { background: #28c840; }
+  .term-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--fg-mute);
+    pointer-events: none;
+  }
+  .term-body {
+    padding: 1.1rem 1.3rem 1.4rem;
+    font-size: 0.92rem;
+    line-height: 1.85;
+    color: var(--fg-soft);
+    min-height: 16rem;
+  }
+  .term-line {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .term-prompt {
+    color: #8ab4f8;
+  }
+  :global(html[data-theme='light']) .term-prompt { color: #1a73e8; }
+  .term-sep { color: var(--fg-mute); }
+  .term-cwd { color: var(--accent); }
+  .term-text { color: var(--fg-soft); }
+  .term-text.accent { color: var(--accent); }
+  .term-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.05em;
+    background: var(--fg-soft);
+    transform: translateY(2px);
+    animation: blink 1.1s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  @media (max-width: 640px) {
+    .term-body { font-size: 0.82rem; padding: 0.9rem 1rem 1.1rem; min-height: 14rem; }
+    .term-title { font-size: 0.7rem; }
+  }
+</style>

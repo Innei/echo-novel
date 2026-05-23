@@ -1,0 +1,128 @@
+---
+interface Props {
+  variant?: 'home' | 'chapter';
+}
+const { variant = 'home' } = Astro.props;
+---
+
+<nav class="nav">
+  <div class="nav-inner container">
+    <a href="/" class="brand">
+      <span class="brand-prompt mono">$</span>
+      <span class="brand-name">echo</span>
+      <span class="brand-cursor"></span>
+    </a>
+    <div class="nav-actions">
+      {variant === 'chapter' && (
+        <a href="/" class="nav-link mono" aria-label="返回目录">目录</a>
+      )}
+      <button id="theme-toggle" class="icon-btn" aria-label="切换主题">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s var(--ease);
+  }
+  .brand:hover { opacity: 0.8; }
+  .brand-prompt {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .brand-name {
+    font-size: 1.05rem;
+    color: var(--fg);
+  }
+  .brand-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.05em;
+    background: var(--accent);
+    margin-left: 2px;
+    transform: translateY(2px);
+    animation: blink 1.1s steps(2) infinite;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .nav-link {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.88rem;
+    border-radius: 6px;
+    color: var(--fg-soft);
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .nav-link:hover {
+    background: var(--bg-soft);
+    color: var(--fg);
+  }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: var(--fg-soft);
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .icon-btn:hover {
+    background: var(--bg-soft);
+    color: var(--fg);
+  }
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+  :global(html[data-theme='light']) .icon-sun { display: block; }
+  :global(html[data-theme='light']) .icon-moon { display: none; }
+</style>
+
+<script>
+  const setup = () => {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', () => {
+      const cur = document.documentElement.dataset.theme || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    });
+  };
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>

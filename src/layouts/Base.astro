@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+  title: string;
+  description?: string;
+  pageType?: 'home' | 'chapter';
+}
+
+const {
+  title,
+  description = '林一与 Echo —— 一部关于程序员、AI 与时代的小说。',
+  pageType = 'home',
+} = Astro.props;
+
+const fullTitle = pageType === 'home' ? title : `${title} · Echo`;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0b0d12" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600;700&display=swap"
+    />
+    <title>{fullTitle}</title>
+    <ClientRouter />
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem('theme');
+        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        const theme = saved || (prefersLight ? 'light' : 'dark');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress" id="progress"></div>
+    <slot />
+    <script>
+      const progress = document.getElementById('progress');
+      const onScroll = () => {
+        if (!progress) return;
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+        progress.style.setProperty('--progress', `${pct}%`);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      document.addEventListener('astro:after-swap', onScroll);
+      onScroll();
+    </script>
+  </body>
+</html>

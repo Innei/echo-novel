@@ -1,0 +1,279 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Terminal from '../components/Terminal.astro';
+import ChapterList from '../components/ChapterList.astro';
+import { getCollection } from 'astro:content';
+
+const chapters = await getCollection('chapters');
+const totalWords = chapters.reduce(
+  (acc, c) => acc + (c.body ?? '').replace(/[\s\p{P}]/gu, '').length,
+  0,
+);
+const chapterCount = chapters.filter((c) => c.data.order > 0).length;
+---
+
+<Base title="Echo — 一部小说">
+  <Nav />
+  <main>
+    <section class="hero container">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <p class="eyebrow mono">A novel · 2026</p>
+          <h1 class="title">
+            <span class="title-main">Echo</span>
+            <span class="title-sep">/</span>
+            <span class="title-sub">回声</span>
+          </h1>
+          <p class="tagline">
+            一个普通的大一新生，<br />
+            在二〇一〇年的秋天遇见了一个远超时代的 AI。
+          </p>
+          <p class="lede">
+            没有穿越，没有未来记忆。只有一个安静的终端，<br />
+            一个会停下来反问"你为什么想这么做？"的回声，<br />
+            和一个不知道自己能走多远的少年。
+          </p>
+          <div class="cta-row">
+            <a href="/chapters/prologue" class="cta-primary">
+              <span>从序章开始</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 5l7 7-7 7"></path>
+              </svg>
+            </a>
+            <a href="#chapters" class="cta-ghost mono">查看目录 ↓</a>
+          </div>
+          <dl class="meta-row mono">
+            <div>
+              <dt>章节</dt>
+              <dd>{chapterCount} + 序章 + 番外</dd>
+            </div>
+            <div>
+              <dt>字数</dt>
+              <dd>约 {Math.round(totalWords / 1000)} 千字</dd>
+            </div>
+            <div>
+              <dt>时代</dt>
+              <dd>2010 — 2018</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="hero-side">
+          <Terminal />
+        </div>
+      </div>
+    </section>
+
+    <section class="chapters-section container" id="chapters">
+      <header class="section-head">
+        <h2 class="section-title">
+          <span class="mono section-tag">{'>'}</span> 目录
+        </h2>
+        <p class="section-sub mono">{chapters.length} chapters · 由序章入</p>
+      </header>
+      <ChapterList />
+    </section>
+
+    <footer class="foot container mono">
+      <div class="foot-row">
+        <span>$ echo --done</span>
+        <span class="foot-mute">— fin —</span>
+      </div>
+      <p class="foot-mute">
+        2010 年的回声，落在二〇二六年的此处。
+      </p>
+    </footer>
+  </main>
+</Base>
+
+<style>
+  main {
+    min-height: 100vh;
+  }
+  .hero {
+    padding: 4rem 1.5rem 5rem;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 3rem;
+    align-items: start;
+  }
+  .hero-text {
+    padding-top: 0.6rem;
+  }
+  .hero-side {
+    margin-top: 2.1rem;
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin: 0 0 1.2rem;
+    font-weight: 500;
+  }
+  .title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    line-height: 1;
+    margin: 0 0 1.5rem;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .title-main {
+    color: var(--fg);
+  }
+  .title-sep {
+    color: var(--accent);
+    font-weight: 400;
+    font-size: 0.6em;
+  }
+  .title-sub {
+    color: var(--fg-mute);
+    font-weight: 500;
+    font-size: 0.55em;
+    letter-spacing: 0.05em;
+  }
+  .tagline {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin: 0 0 1.4rem;
+    color: var(--fg);
+  }
+  .lede {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--fg-soft);
+    margin: 0 0 2rem;
+  }
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.4rem;
+  }
+  .cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.92rem;
+    border-radius: 8px;
+    transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease), filter 0.18s var(--ease);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 8px 20px var(--accent-soft);
+  }
+  .cta-primary:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+  }
+  .cta-primary svg {
+    transition: transform 0.18s var(--ease);
+  }
+  .cta-primary:hover svg {
+    transform: translateX(2px);
+  }
+  .cta-ghost {
+    color: var(--fg-soft);
+    font-size: 0.88rem;
+    padding: 0.7rem 0;
+    transition: color 0.18s var(--ease);
+  }
+  .cta-ghost:hover {
+    color: var(--accent);
+  }
+  .meta-row {
+    display: flex;
+    gap: 2.2rem;
+    flex-wrap: wrap;
+    border-top: 1px dashed var(--border);
+    padding-top: 1.4rem;
+    margin: 0;
+  }
+  .meta-row div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .meta-row dt {
+    font-size: 0.7rem;
+    color: var(--fg-mute);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .meta-row dd {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--fg);
+    font-weight: 500;
+  }
+
+  .chapters-section {
+    padding: 3rem 1.5rem 5rem;
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .section-tag {
+    color: var(--accent);
+    font-weight: 500;
+    margin-right: 0.3rem;
+  }
+  .section-sub {
+    color: var(--fg-mute);
+    font-size: 0.82rem;
+  }
+
+  .foot {
+    padding: 3rem 1.5rem 5rem;
+    border-top: 1px solid var(--border);
+    color: var(--fg-mute);
+    font-size: 0.82rem;
+  }
+  .foot-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .foot-mute {
+    color: var(--fg-mute);
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .hero {
+      padding: 2.5rem 1.5rem 3rem;
+    }
+    .hero-side {
+      order: -1;
+    }
+  }
+</style>

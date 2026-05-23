@@ -1,0 +1,197 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+
+export async function getStaticPaths() {
+  const all = await getCollection('chapters');
+  const sorted = [...all].sort((a, b) => a.data.order - b.data.order);
+  const slugOf = (order: number) => (order === 0 ? 'prologue' : String(order));
+  return sorted.map((entry, idx) => ({
+    params: { slug: slugOf(entry.data.order) },
+    props: {
+      entry,
+      prev: idx > 0 ? sorted[idx - 1] : null,
+      next: idx < sorted.length - 1 ? sorted[idx + 1] : null,
+    },
+  }));
+}
+
+type Props = {
+  entry: CollectionEntry<'chapters'>;
+  prev: CollectionEntry<'chapters'> | null;
+  next: CollectionEntry<'chapters'> | null;
+};
+
+const { entry, prev, next } = Astro.props as Props;
+const { Content } = await render(entry);
+
+const slugOf = (order: number) => (order === 0 ? 'prologue' : String(order));
+
+const wordsRaw = (entry.body ?? '').replace(/[\s\p{P}]/gu, '').length;
+const readMin = Math.max(1, Math.round(wordsRaw / 400));
+const orderLabel = entry.data.order === 0 ? '序章' : `Ch.${String(entry.data.order).padStart(2, '0')}`;
+---
+
+<Base title={entry.data.title} pageType="chapter" description={entry.data.title}>
+  <Nav variant="chapter" />
+  <main class="chapter-main">
+    <article class="container read-width">
+      <header class="ch-head">
+        <p class="ch-meta mono">
+          <span>{orderLabel}</span>
+          <span class="dot-sep">·</span>
+          <span>约 {readMin} 分钟</span>
+          <span class="dot-sep">·</span>
+          <span>{wordsRaw} 字</span>
+        </p>
+        <h1 class="ch-title">{entry.data.title}</h1>
+        <div class="ch-divider">
+          <span></span><span class="mono">echo</span><span></span>
+        </div>
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
+      <nav class="ch-pager mono">
+        {prev ? (
+          <a href={`/chapters/${slugOf(prev.data.order)}`} class="pager-item prev">
+            <span class="pager-label">← 上一章</span>
+            <span class="pager-title">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span class="pager-item disabled">
+            <span class="pager-label">— 序章 —</span>
+            <span class="pager-title">已是开篇</span>
+          </span>
+        )}
+        {next ? (
+          <a href={`/chapters/${slugOf(next.data.order)}`} class="pager-item next">
+            <span class="pager-label">下一章 →</span>
+            <span class="pager-title">{next.data.title}</span>
+          </a>
+        ) : (
+          <span class="pager-item disabled">
+            <span class="pager-label">— 终 —</span>
+            <span class="pager-title">已是终章</span>
+          </span>
+        )}
+      </nav>
+      <div class="back-row">
+        <a href="/" class="back-link mono">$ cd ~/echo &nbsp;# 返回目录</a>
+      </div>
+    </article>
+  </main>
+</Base>
+
+<style>
+  .chapter-main {
+    padding: 3rem 0 5rem;
+  }
+  .ch-head {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+  .ch-meta {
+    color: var(--fg-mute);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    margin: 0 0 1.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .dot-sep {
+    opacity: 0.5;
+  }
+  .ch-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    line-height: 1.35;
+    margin: 0 0 1.6rem;
+    color: var(--fg);
+    letter-spacing: 0.01em;
+  }
+  .ch-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    justify-content: center;
+    color: var(--fg-mute);
+    font-size: 0.82rem;
+  }
+  .ch-divider span:first-child,
+  .ch-divider span:last-child {
+    width: 2.4rem;
+    height: 1px;
+    background: var(--border-strong);
+  }
+
+  .ch-pager {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.6rem;
+  }
+  .pager-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .pager-item.prev { text-align: left; }
+  .pager-item.next { text-align: right; }
+  .pager-item:not(.disabled):hover {
+    background: var(--bg-soft);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+  .pager-item.disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .pager-label {
+    font-size: 0.74rem;
+    color: var(--fg-mute);
+    letter-spacing: 0.08em;
+  }
+  .pager-title {
+    font-family: var(--font-serif);
+    font-size: 0.98rem;
+    color: var(--fg);
+  }
+  .back-row {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .back-link {
+    display: inline-block;
+    font-size: 0.84rem;
+    color: var(--fg-mute);
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .back-link:hover {
+    color: var(--accent);
+    background: var(--bg-soft);
+  }
+
+  @media (max-width: 640px) {
+    .chapter-main { padding: 1.5rem 0 3rem; }
+    .ch-head { margin-bottom: 2.5rem; }
+    .ch-pager {
+      grid-template-columns: 1fr;
+    }
+    .pager-item.next { text-align: left; }
+  }
+</style>

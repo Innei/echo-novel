@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('chapters');
+const sorted = all.sort((a, b) => a.data.order - b.data.order);
+
+const slugOf = (order: number) => (order === 0 ? 'prologue' : String(order));
+
+const wordCount = (body: string) =>
+  body.replace(/[\s\p{P}]/gu, '').length;
+
+const entries = sorted.map((entry) => ({
+  href: `/chapters/${slugOf(entry.data.order)}`,
+  order: entry.data.order,
+  title: entry.data.title,
+  words: wordCount(entry.body ?? ''),
+}));
+---
+
+<ol class="chapters">
+  {
+    entries.map((e) => (
+      <li class="chapter-item">
+        <a href={e.href} class="chapter-link">
+          <span class="chapter-num mono">
+            {e.order === 0 ? '00' : String(e.order).padStart(2, '0')}
+          </span>
+          <span class="chapter-title">{e.title}</span>
+          <span class="chapter-words mono">{Math.round(e.words / 100) / 10}k 字</span>
+        </a>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .chapters {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+  }
+  .chapter-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .chapter-link {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr auto;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+    transition: background 0.2s var(--ease), padding-left 0.2s var(--ease);
+    position: relative;
+  }
+  .chapter-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.2s var(--ease);
+  }
+  .chapter-link:hover {
+    background: var(--bg-soft);
+    padding-left: 1rem;
+  }
+  .chapter-link:hover::before {
+    transform: scaleY(0.7);
+  }
+  .chapter-num {
+    color: var(--fg-mute);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .chapter-title {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--fg);
+    letter-spacing: 0.01em;
+  }
+  .chapter-words {
+    color: var(--fg-mute);
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .chapter-link {
+      grid-template-columns: 2.6rem 1fr auto;
+      gap: 0.7rem;
+      padding: 0.9rem 0.3rem;
+    }
+    .chapter-title {
+      font-size: 1rem;
+    }
+    .chapter-words {
+      font-size: 0.72rem;
+    }
+  }
+</style>
