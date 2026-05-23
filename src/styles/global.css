@@ -3,8 +3,8 @@
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
 
-  --max-read: 75ch;
-  --max-page: 64rem;
+  --max-read: 105ch;
+  --max-page: 80rem;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
