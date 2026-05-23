@@ -3,7 +3,7 @@ import remarkCnQuotes from './src/lib/remark-cn-quotes.mjs';
 import rehypeDropCap from './src/lib/rehype-drop-cap.mjs';
 
 export default defineConfig({
-  site: 'https://echo-novel.innei-work.workers.dev',
+  site: 'https://echo-novel.innei.in',
   output: 'static',
   trailingSlash: 'never',
   build: {
