@@ -6,15 +6,24 @@ interface Props {
   title: string;
   description?: string;
   pageType?: 'home' | 'chapter';
+  image?: string;
 }
+
+const SITE = 'https://echo-novel.innei.in';
+const DEFAULT_DESC =
+  '林一与 Echo —— 一部关于二〇一〇年程序员、AI 与时代的长篇小说。三十六章，约十三万字。';
 
 const {
   title,
-  description = '林一与 Echo —— 一部关于程序员、AI 与时代的小说。',
+  description = DEFAULT_DESC,
   pageType = 'home',
+  image = '/og.png',
 } = Astro.props;
 
 const fullTitle = pageType === 'home' ? title : `${title} · Echo`;
+const canonical = new URL(Astro.url.pathname, SITE).href;
+const ogImage = new URL(image, SITE).href;
+const ogType = pageType === 'chapter' ? 'article' : 'website';
 ---
 
 <!doctype html>
@@ -22,20 +31,46 @@ const fullTitle = pageType === 'home' ? title : `${title} · Echo`;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#fafaf6" />
+    <link rel="canonical" href={canonical} />
+
+    <meta name="theme-color" content="#fafaf6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e0c" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="author" content="Innei" />
+    <meta name="robots" content="index,follow" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="article" />
-    <meta name="twitter:card" content="summary" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Echo — 一部关于 2010 年程序员与 AI 的小说" />
+    <meta property="og:site_name" content="Echo" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="Echo — 一部关于 2010 年程序员与 AI 的小说" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap"
     />
-    <title>{fullTitle}</title>
     <ClientRouter />
     <script is:inline>
       (() => {

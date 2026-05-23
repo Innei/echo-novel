@@ -1,0 +1,22 @@
+{
+  "name": "Echo — 回声",
+  "short_name": "Echo",
+  "description": "一部关于程序员、AI 与时代的小说。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf6",
+  "theme_color": "#c92a2a",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
