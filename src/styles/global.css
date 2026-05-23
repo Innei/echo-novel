@@ -66,6 +66,9 @@ body {
   line-height: 1.75;
   min-height: 100vh;
   transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+  -webkit-text-autospace: normal;
+  text-autospace: normal;
+  text-spacing-trim: normal;
 }
 
 ::selection {
