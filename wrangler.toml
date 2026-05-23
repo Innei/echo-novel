@@ -1,6 +1,11 @@
 name = "echo-novel"
-account_id = "4d01e7a919eff82eb04333f27cb9da3b"
+account_id = "de7ecb0eaa0a328071255d557a6adb66"
 compatibility_date = "2025-04-01"
+workers_dev = true
+
+routes = [
+  { pattern = "echo-novel.innei.in", custom_domain = true, zone_name = "innei.in" }
+]
 
 [assets]
 directory = "./dist"
