@@ -6,6 +6,7 @@ const chapters = defineCollection({
   schema: z.object({
     title: z.string(),
     order: z.number(),
+    epigraph: z.string().optional(),
   }),
 });
 

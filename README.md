@@ -56,11 +56,13 @@ pnpm deploy
 
 ## 设计
 
-- **暗夜终端 × 文学衬线**：UI 用 JetBrains Mono，正文用 Noto Serif SC
-- 双主题（dark / light），跟随系统 + 手动切换
-- 阅读页中文排版优化：首行缩进、行高 1.95、最大宽 38em
+- **Editorial / Newspaper** 报刊版式 + 现代克制色（米白 / 墨黑 / 朱红 `#c92a2a`）
+- 字体：Source Serif 4 + Noto Serif SC（正文）· JetBrains Mono（UI / kicker / byline / code）
+- 双主题 light / dark，跟随系统 + 手动切换（`灯` / `夜`）
+- 章节内页排印：kicker · headline · meta · epigraph · ornament · drop cap · 75ch 宽
+- 引号：自写 remark plugin 按上下文配对中文双引号（关闭 Astro 默认 smartypants）
+- 代码：Shiki 双主题 `github-light` + `github-dark-dimmed`，CSS 变量切换
 - View Transitions：章节间无刷新切换
-- 顶部阅读进度条
 
 ## License
 

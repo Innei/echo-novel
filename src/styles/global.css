@@ -1,5 +1,5 @@
 :root {
-  --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+  --font-serif: 'Source Serif 4', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
 
@@ -10,36 +10,38 @@
 }
 
 :root,
-html[data-theme='dark'] {
-  color-scheme: dark;
-  --bg: #0b0d12;
-  --bg-elev: #11141b;
-  --bg-soft: #161a23;
-  --fg: #e6e7ea;
-  --fg-soft: #b6b9c2;
-  --fg-mute: #6b7080;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --accent: #5eead4;
-  --accent-soft: rgba(94, 234, 212, 0.12);
-  --selection: rgba(94, 234, 212, 0.28);
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
 html[data-theme='light'] {
   color-scheme: light;
-  --bg: #faf9f6;
+  --bg: #ffffff;
+  --bg-soft: #fafaf6;
   --bg-elev: #ffffff;
-  --bg-soft: #f0eee8;
-  --fg: #1a1a1a;
-  --fg-soft: #3a3a3a;
-  --fg-mute: #8a8a8a;
-  --border: rgba(0, 0, 0, 0.08);
-  --border-strong: rgba(0, 0, 0, 0.16);
-  --accent: #0f766e;
-  --accent-soft: rgba(15, 118, 110, 0.08);
-  --selection: rgba(15, 118, 110, 0.18);
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --fg: #0a0a0a;
+  --fg-soft: #2a2a2a;
+  --fg-mute: #6a6a6a;
+  --rule: #0a0a0a;
+  --border: #e5e2da;
+  --border-strong: #c8c4b8;
+  --accent: #c92a2a;
+  --accent-soft: rgba(201, 42, 42, 0.08);
+  --selection: rgba(201, 42, 42, 0.18);
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0e0e0c;
+  --bg-soft: #16140f;
+  --bg-elev: #1a1714;
+  --fg: #ede7d3;
+  --fg-soft: #c8c0aa;
+  --fg-mute: #8a8064;
+  --rule: #ede7d3;
+  --border: #2a2520;
+  --border-strong: #423b30;
+  --accent: #ff5757;
+  --accent-soft: rgba(255, 87, 87, 0.10);
+  --selection: rgba(255, 87, 87, 0.22);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 }
 
 *,
@@ -124,13 +126,60 @@ button {
   transition: width 80ms linear;
 }
 
+/* editorial primitives */
+.chap-rule {
+  border-bottom: 3px double var(--rule);
+  padding: 0.45rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+
+.chap-rule .accent {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.byline {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+
+.ornament {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.55em;
+  color: var(--accent);
+  padding-left: 0.55em;
+  margin: 1.4rem 0 1.6rem;
+}
+
 /* prose (chapter body) */
 .prose {
   font-family: var(--font-serif);
   font-size: 1.0625rem;
   line-height: 1.95;
   color: var(--fg);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
 }
 
 .prose p {
@@ -139,16 +188,34 @@ button {
   hanging-punctuation: allow-end;
 }
 
-.prose p:first-of-type {
-  margin-top: 0;
+.prose p.has-drop-cap {
+  text-indent: 0;
+}
+
+.prose p.has-drop-cap::first-letter {
+  font-size: 3.4em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  margin: 0.06em 0.1em 0 0;
+  color: var(--fg);
+  font-family: var(--font-serif);
+}
+
+.prose p.has-drop-cap .dc-quote {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 1.2em;
+  margin-right: 0.05em;
 }
 
 .prose hr {
   border: none;
   height: 1px;
-  background: var(--border);
-  margin: 2.5em auto;
-  width: 6rem;
+  background: var(--accent);
+  margin: 2.6em auto;
+  width: 5rem;
+  opacity: 0.55;
   text-indent: 0;
 }
 
@@ -157,8 +224,8 @@ button {
 .prose h3 {
   font-family: var(--font-serif);
   text-indent: 0;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  letter-spacing: -0.005em;
 }
 
 .prose h2 {
@@ -191,14 +258,14 @@ button {
 
 .prose pre {
   font-family: var(--font-mono);
-  font-size: 0.88em;
-  line-height: 1.6;
-  padding: 1rem 1.1rem;
-  background: var(--bg-soft) !important;
+  font-size: 0.86em;
+  line-height: 1.65;
+  padding: 1rem 1.15rem;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 4px;
   overflow-x: auto;
   text-indent: 0;
+  margin: 1.4em 0;
 }
 
 .prose pre code {
@@ -207,9 +274,28 @@ button {
   padding: 0;
 }
 
+/* shiki dual-theme via CSS variables */
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+html[data-theme='dark'] .shiki,
+html[data-theme='dark'] .shiki span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
 .prose strong {
   color: var(--fg);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .prose em {
@@ -241,6 +327,9 @@ button {
   }
   .container {
     padding: 0 1.1rem;
+  }
+  .prose p.has-drop-cap::first-letter {
+    font-size: 3em;
   }
 }
 

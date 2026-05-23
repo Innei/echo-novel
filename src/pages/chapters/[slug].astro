@@ -28,9 +28,25 @@ const { Content } = await render(entry);
 
 const slugOf = (order: number) => (order === 0 ? 'prologue' : String(order));
 
+const ORDINALS = [
+  'Prologue', 'Chapter One', 'Chapter Two', 'Chapter Three', 'Chapter Four',
+  'Chapter Five', 'Chapter Six', 'Chapter Seven', 'Chapter Eight', 'Chapter Nine',
+  'Chapter Ten', 'Chapter Eleven', 'Chapter Twelve', 'Chapter Thirteen',
+  'Chapter Fourteen', 'Chapter Fifteen', 'Chapter Sixteen', 'Chapter Seventeen',
+  'Chapter Eighteen', 'Chapter Nineteen', 'Chapter Twenty', 'Chapter Twenty-One',
+  'Chapter Twenty-Two', 'Chapter Twenty-Three', 'Chapter Twenty-Four',
+  'Chapter Twenty-Five', 'Chapter Twenty-Six', 'Chapter Twenty-Seven',
+  'Chapter Twenty-Eight', 'Chapter Twenty-Nine', 'Chapter Thirty',
+  'Chapter Thirty-One', 'Chapter Thirty-Two', 'Chapter Thirty-Three',
+  'Chapter Thirty-Four', 'Coda · Five Years Later',
+];
+
+const ordinal = ORDINALS[entry.data.order] ?? `Chapter ${entry.data.order}`;
+const ruleLabel = entry.data.order === 0 ? 'Prologue' : `Ch. ${String(entry.data.order).padStart(2, '0')}`;
+
 const wordsRaw = (entry.body ?? '').replace(/[\s\p{P}]/gu, '').length;
 const readMin = Math.max(1, Math.round(wordsRaw / 400));
-const orderLabel = entry.data.order === 0 ? '序章' : `Ch.${String(entry.data.order).padStart(2, '0')}`;
+const epigraph = entry.data.epigraph;
 ---
 
 <Base title={entry.data.title} pageType="chapter" description={entry.data.title}>
@@ -38,47 +54,56 @@ const orderLabel = entry.data.order === 0 ? '序章' : `Ch.${String(entry.data.o
   <main class="chapter-main">
     <article class="container read-width">
       <header class="ch-head">
-        <p class="ch-meta mono">
-          <span>{orderLabel}</span>
-          <span class="dot-sep">·</span>
-          <span>约 {readMin} 分钟</span>
-          <span class="dot-sep">·</span>
-          <span>{wordsRaw} 字</span>
-        </p>
-        <h1 class="ch-title">{entry.data.title}</h1>
-        <div class="ch-divider">
-          <span></span><span class="mono">echo</span><span></span>
+        <div class="chap-rule">
+          <span>Echo · Vol. 1</span>
+          <span class="accent">● {ruleLabel} · {entry.data.title}</span>
         </div>
+        <p class="kicker ch-ordinal">{ordinal}</p>
+        <h1 class="ch-title">{entry.data.title}</h1>
+        <p class="byline ch-meta">
+          <span>{wordsRaw.toLocaleString()} 字</span>
+          <span class="dot">·</span>
+          <span>约 {readMin} 分钟</span>
+        </p>
+        {epigraph && (
+          <blockquote class="ch-epigraph">
+            <p>“{epigraph}”</p>
+          </blockquote>
+        )}
+        <div class="ornament">— ECHO —</div>
       </header>
+
       <div class="prose">
         <Content />
       </div>
-      <nav class="ch-pager mono">
+
+      <nav class="ch-pager">
         {prev ? (
           <a href={`/chapters/${slugOf(prev.data.order)}`} class="pager-item prev">
-            <span class="pager-label">← 上一章</span>
+            <span class="pager-label byline">← Previous</span>
             <span class="pager-title">{prev.data.title}</span>
           </a>
         ) : (
           <span class="pager-item disabled">
-            <span class="pager-label">— 序章 —</span>
+            <span class="pager-label byline">— Prologue —</span>
             <span class="pager-title">已是开篇</span>
           </span>
         )}
         {next ? (
           <a href={`/chapters/${slugOf(next.data.order)}`} class="pager-item next">
-            <span class="pager-label">下一章 →</span>
+            <span class="pager-label byline">Next →</span>
             <span class="pager-title">{next.data.title}</span>
           </a>
         ) : (
           <span class="pager-item disabled">
-            <span class="pager-label">— 终 —</span>
+            <span class="pager-label byline">— Fin —</span>
             <span class="pager-title">已是终章</span>
           </span>
         )}
       </nav>
+
       <div class="back-row">
-        <a href="/" class="back-link mono">$ cd ~/echo &nbsp;# 返回目录</a>
+        <a href="/" class="back-link mono">↩ 返回目录</a>
       </div>
     </article>
   </main>
@@ -86,48 +111,46 @@ const orderLabel = entry.data.order === 0 ? '序章' : `Ch.${String(entry.data.o
 
 <style>
   .chapter-main {
-    padding: 3rem 0 5rem;
+    padding: 2.4rem 0 5rem;
   }
   .ch-head {
-    text-align: center;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2.8rem;
   }
-  .ch-meta {
-    color: var(--fg-mute);
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-    margin: 0 0 1.4rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .dot-sep {
-    opacity: 0.5;
+  .ch-ordinal {
+    margin: 1.4rem 0 0.4rem;
   }
   .ch-title {
     font-family: var(--font-serif);
     font-weight: 700;
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    line-height: 1.35;
-    margin: 0 0 1.6rem;
+    font-size: clamp(1.9rem, 4vw, 2.4rem);
+    line-height: 1.2;
+    margin: 0 0 0.7rem;
     color: var(--fg);
-    letter-spacing: 0.01em;
+    letter-spacing: -0.005em;
   }
-  .ch-divider {
-    display: flex;
+  .ch-meta {
+    display: inline-flex;
     align-items: center;
-    gap: 0.8rem;
-    justify-content: center;
-    color: var(--fg-mute);
-    font-size: 0.82rem;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin: 0 0 1.3rem;
   }
-  .ch-divider span:first-child,
-  .ch-divider span:last-child {
-    width: 2.4rem;
-    height: 1px;
-    background: var(--border-strong);
+  .ch-meta .dot {
+    opacity: 0.5;
+  }
+  .ch-epigraph {
+    margin: 1rem 0 0;
+    padding: 0.2em 0 0.2em 1.1em;
+    border-left: 2px solid var(--accent);
+    color: var(--fg-soft);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 36em;
+  }
+  .ch-epigraph p {
+    margin: 0;
   }
 
   .ch-pager {
@@ -141,28 +164,26 @@ const orderLabel = entry.data.order === 0 ? '序章' : `Ch.${String(entry.data.o
   .pager-item {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    padding: 1rem 1.1rem;
+    gap: 0.45rem;
+    padding: 0.95rem 1.1rem;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 3px;
     background: transparent;
     transition: background 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
   }
   .pager-item.prev { text-align: left; }
   .pager-item.next { text-align: right; }
   .pager-item:not(.disabled):hover {
-    background: var(--bg-soft);
-    border-color: var(--border-strong);
+    background: var(--accent-soft);
+    border-color: var(--accent);
     transform: translateY(-1px);
   }
   .pager-item.disabled {
-    opacity: 0.55;
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .pager-label {
-    font-size: 0.74rem;
     color: var(--fg-mute);
-    letter-spacing: 0.08em;
   }
   .pager-title {
     font-family: var(--font-serif);
@@ -175,23 +196,23 @@ const orderLabel = entry.data.order === 0 ? '序章' : `Ch.${String(entry.data.o
   }
   .back-link {
     display: inline-block;
-    font-size: 0.84rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--fg-mute);
-    padding: 0.5rem 0.9rem;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    border-radius: 2px;
     transition: color 0.2s var(--ease), background 0.2s var(--ease);
   }
   .back-link:hover {
     color: var(--accent);
-    background: var(--bg-soft);
+    background: var(--accent-soft);
   }
 
   @media (max-width: 640px) {
-    .chapter-main { padding: 1.5rem 0 3rem; }
-    .ch-head { margin-bottom: 2.5rem; }
-    .ch-pager {
-      grid-template-columns: 1fr;
-    }
+    .chapter-main { padding: 1.4rem 0 3rem; }
+    .ch-head { margin-bottom: 2rem; }
+    .ch-pager { grid-template-columns: 1fr; }
     .pager-item.next { text-align: left; }
   }
 </style>

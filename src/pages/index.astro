@@ -17,33 +17,30 @@ const chapterCount = chapters.filter((c) => c.data.order > 0).length;
   <Nav />
   <main>
     <section class="hero container">
+      <div class="hero-rule chap-rule">
+        <span>Echo · Vol. 1</span>
+        <span class="accent">● Issue 01 · 2026</span>
+      </div>
+
       <div class="hero-grid">
         <div class="hero-text">
-          <p class="eyebrow mono">A novel · 2026</p>
-          <h1 class="title">
-            <span class="title-main">Echo</span>
-            <span class="title-sep">/</span>
-            <span class="title-sub">回声</span>
+          <p class="hero-kicker kicker">A Novel · 35 Chapters</p>
+          <h1 class="hero-headline">
+            在二〇一〇年的<br />那个深夜，<br />他遇见了 Echo。
           </h1>
-          <p class="tagline">
-            一个普通的大一新生，<br />
-            在二〇一〇年的秋天遇见了一个远超时代的 AI。
+          <p class="hero-lede">
+            没有穿越，没有未来记忆。只有一个安静的终端，一个会停下来反问"你为什么想这么做？"的回声，和一个不知道自己能走多远的少年。
           </p>
-          <p class="lede">
-            没有穿越，没有未来记忆。只有一个安静的终端，<br />
-            一个会停下来反问"你为什么想这么做？"的回声，<br />
-            和一个不知道自己能走多远的少年。
-          </p>
-          <div class="cta-row">
+
+          <div class="hero-cta">
             <a href="/chapters/prologue" class="cta-primary">
               <span>从序章开始</span>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14M13 5l7 7-7 7"></path>
-              </svg>
+              <span class="arrow">▸</span>
             </a>
             <a href="#chapters" class="cta-ghost mono">查看目录 ↓</a>
           </div>
-          <dl class="meta-row mono">
+
+          <dl class="hero-meta byline">
             <div>
               <dt>章节</dt>
               <dd>{chapterCount} + 序章 + 番外</dd>
@@ -58,6 +55,7 @@ const chapterCount = chapters.filter((c) => c.data.order > 0).length;
             </div>
           </dl>
         </div>
+
         <div class="hero-side">
           <Terminal />
         </div>
@@ -65,23 +63,24 @@ const chapterCount = chapters.filter((c) => c.data.order > 0).length;
     </section>
 
     <section class="chapters-section container" id="chapters">
-      <header class="section-head">
-        <h2 class="section-title">
-          <span class="mono section-tag">{'>'}</span> 目录
-        </h2>
-        <p class="section-sub mono">{chapters.length} chapters · 由序章入</p>
+      <header class="section-head chap-rule">
+        <span>Contents</span>
+        <span class="accent">{chapters.length} chapters</span>
       </header>
+      <p class="section-sub byline">由序章入 ── 全 {chapters.length} 章节，依序排列</p>
       <ChapterList />
     </section>
 
-    <footer class="foot container mono">
-      <div class="foot-row">
+    <footer class="foot container">
+      <div class="foot-rule chap-rule">
         <span>$ echo --done</span>
-        <span class="foot-mute">— fin —</span>
+        <span class="accent">— fin —</span>
       </div>
-      <p class="foot-mute">
-        2010 年的回声，落在二〇二六年的此处。
-      </p>
+      <div class="colophon byline">
+        <p>Set in Source Serif 4 & Noto Serif SC. UI in JetBrains Mono.</p>
+        <p>Source: <a href="https://github.com/Innei/echo-novel" target="_blank" rel="noopener">github.com/Innei/echo-novel</a></p>
+        <p>© 2026 Innei · 文本版权归原作者所有</p>
+      </div>
     </footer>
   </main>
 </Base>
@@ -91,189 +90,151 @@ const chapterCount = chapters.filter((c) => c.data.order > 0).length;
     min-height: 100vh;
   }
   .hero {
-    padding: 4rem 1.5rem 5rem;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+  .hero-rule {
+    margin-bottom: 2rem;
   }
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     gap: 3rem;
     align-items: start;
   }
-  .hero-text {
-    padding-top: 0.6rem;
+  .hero-kicker {
+    margin: 0 0 1rem;
   }
-  .hero-side {
-    margin-top: 2.1rem;
-  }
-  .eyebrow {
-    color: var(--accent);
-    font-size: 0.82rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin: 0 0 1.2rem;
-    font-weight: 500;
-  }
-  .title {
+  .hero-headline {
     font-family: var(--font-serif);
     font-weight: 700;
-    font-size: clamp(3rem, 8vw, 5.5rem);
-    line-height: 1;
-    margin: 0 0 1.5rem;
-    letter-spacing: -0.01em;
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-  .title-main {
-    color: var(--fg);
-  }
-  .title-sep {
-    color: var(--accent);
-    font-weight: 400;
-    font-size: 0.6em;
-  }
-  .title-sub {
-    color: var(--fg-mute);
-    font-weight: 500;
-    font-size: 0.55em;
-    letter-spacing: 0.05em;
-  }
-  .tagline {
-    font-family: var(--font-serif);
-    font-size: 1.25rem;
-    line-height: 1.6;
+    font-size: clamp(2.2rem, 5.5vw, 3.5rem);
+    line-height: 1.08;
     margin: 0 0 1.4rem;
+    letter-spacing: -0.005em;
     color: var(--fg);
   }
-  .lede {
+  .hero-lede {
     font-family: var(--font-serif);
-    font-size: 1rem;
+    font-size: 1.02rem;
     line-height: 1.75;
     color: var(--fg-soft);
-    margin: 0 0 2rem;
+    margin: 0 0 1.8rem;
+    max-width: 32em;
   }
-  .cta-row {
+  .hero-cta {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.1rem;
     flex-wrap: wrap;
-    margin-bottom: 2.4rem;
+    margin-bottom: 2.2rem;
   }
   .cta-primary {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.7rem 1.2rem;
+    padding: 0.65rem 1.1rem;
     background: var(--accent);
-    color: var(--bg);
+    color: #fff;
     font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: 0.92rem;
-    border-radius: 8px;
-    transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease), filter 0.18s var(--ease);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 8px 20px var(--accent-soft);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: transform 0.18s var(--ease), filter 0.18s var(--ease), box-shadow 0.18s var(--ease);
   }
   .cta-primary:hover {
     transform: translateY(-1px);
-    filter: brightness(1.05);
+    filter: brightness(1.1);
+    box-shadow: 0 6px 18px var(--accent-soft);
   }
-  .cta-primary svg {
+  .cta-primary .arrow {
     transition: transform 0.18s var(--ease);
   }
-  .cta-primary:hover svg {
-    transform: translateX(2px);
+  .cta-primary:hover .arrow {
+    transform: translateX(3px);
   }
   .cta-ghost {
-    color: var(--fg-soft);
-    font-size: 0.88rem;
-    padding: 0.7rem 0;
+    color: var(--fg-mute);
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 0.5rem 0;
     transition: color 0.18s var(--ease);
   }
   .cta-ghost:hover {
     color: var(--accent);
   }
-  .meta-row {
+  .hero-meta {
     display: flex;
-    gap: 2.2rem;
+    gap: 2.4rem;
     flex-wrap: wrap;
-    border-top: 1px dashed var(--border);
+    border-top: 1px solid var(--border);
     padding-top: 1.4rem;
     margin: 0;
   }
-  .meta-row div {
+  .hero-meta div {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.25rem;
   }
-  .meta-row dt {
-    font-size: 0.7rem;
+  .hero-meta dt {
+    font-size: 0.66rem;
     color: var(--fg-mute);
-    letter-spacing: 0.12em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
-  .meta-row dd {
+  .hero-meta dd {
     margin: 0;
-    font-size: 0.92rem;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
     color: var(--fg);
     font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
   }
 
   .chapters-section {
-    padding: 3rem 1.5rem 5rem;
+    padding: 1rem 1.5rem 4.5rem;
   }
   .section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-    flex-wrap: wrap;
-  }
-  .section-title {
-    font-family: var(--font-serif);
-    font-size: 1.6rem;
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-  .section-tag {
-    color: var(--accent);
-    font-weight: 500;
-    margin-right: 0.3rem;
+    margin-bottom: 0.7rem;
   }
   .section-sub {
+    margin: 0 0 1.4rem;
     color: var(--fg-mute);
-    font-size: 0.82rem;
   }
 
   .foot {
-    padding: 3rem 1.5rem 5rem;
-    border-top: 1px solid var(--border);
-    color: var(--fg-mute);
-    font-size: 0.82rem;
+    padding: 1.5rem 1.5rem 4.5rem;
   }
-  .foot-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .foot-rule {
+    margin-bottom: 1.4rem;
   }
-  .foot-mute {
+  .colophon {
     color: var(--fg-mute);
+    font-size: 0.66rem;
+    line-height: 1.9;
+  }
+  .colophon p {
+    margin: 0;
+  }
+  .colophon a {
+    color: var(--fg-soft);
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 3px;
+    transition: color 0.18s var(--ease);
+  }
+  .colophon a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
   }
 
   @media (max-width: 900px) {
     .hero-grid {
       grid-template-columns: 1fr;
-      gap: 2.5rem;
-    }
-    .hero {
-      padding: 2.5rem 1.5rem 3rem;
-    }
-    .hero-side {
-      order: -1;
+      gap: 2.4rem;
     }
   }
 </style>
