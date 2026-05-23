@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import remarkCnQuotes from './src/lib/remark-cn-quotes.mjs';
+import remarkChat from './src/lib/remark-chat.mjs';
 import rehypeDropCap from './src/lib/rehype-drop-cap.mjs';
 
 export default defineConfig({
@@ -11,7 +12,7 @@ export default defineConfig({
   },
   markdown: {
     smartypants: false,
-    remarkPlugins: [remarkCnQuotes],
+    remarkPlugins: [remarkChat, remarkCnQuotes],
     rehypePlugins: [rehypeDropCap],
     shikiConfig: {
       themes: {

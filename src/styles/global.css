@@ -317,6 +317,62 @@ html[data-theme='dark'] .astro-code span {
   margin: 0.3em 0;
 }
 
+/* ── Chat TUI (terminal-style bilingual conversation) ── */
+.chat-block {
+  margin: 1.4em 0;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  text-indent: 0;
+}
+
+.chat-body {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: var(--fg-soft);
+  background: var(--bg-soft);
+  padding: 0.85rem 1.05rem;
+}
+
+.chat-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 1.3em;
+}
+
+.chat-line--empty,
+.chat-line--cn-empty {
+  user-select: none;
+}
+
+.chat-prompt {
+  color: var(--accent);
+  font-weight: 600;
+  user-select: none;
+}
+
+.chat-line--input {
+  color: var(--fg);
+}
+
+.chat-line--echo {
+  color: var(--fg-soft);
+}
+
+.chat-line--cn {
+  color: var(--fg-mute);
+  font-size: 0.76rem;
+  padding-left: 1.6em;
+  font-style: italic;
+}
+
+.chat-line--cn-empty {
+  color: var(--fg-mute);
+  font-size: 0.76rem;
+  padding-left: 1.6em;
+}
+
 /* utilities */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
