@@ -47,12 +47,24 @@ const ruleLabel = entry.data.order === 0 ? 'Prologue' : `Ch. ${String(entry.data
 const wordsRaw = (entry.body ?? '').replace(/[\s\p{P}]/gu, '').length;
 const readMin = Math.max(1, Math.round(wordsRaw / 400));
 const epigraph = entry.data.epigraph;
+const currentSlug = slugOf(entry.data.order);
+const currentUrl = `/chapters/${currentSlug}`;
+const prevSlug = prev ? slugOf(prev.data.order) : '';
+const nextSlug = next ? slugOf(next.data.order) : '';
+const fullTitle = `${entry.data.title} · Echo`;
 ---
 
 <Base title={entry.data.title} pageType="chapter" description={entry.data.title}>
   <Nav variant="chapter" />
   <main class="chapter-main">
-    <article class="container read-width">
+    <article
+      class="chapter-article container read-width"
+      data-slug={currentSlug}
+      data-url={currentUrl}
+      data-title={fullTitle}
+      data-prev-slug={prevSlug || undefined}
+      data-next-slug={nextSlug || undefined}
+    >
       <header class="ch-head">
         <div class="chap-rule">
           <span>Echo · Vol. 1</span>
@@ -77,7 +89,7 @@ const epigraph = entry.data.epigraph;
         <Content />
       </div>
 
-      <nav class="ch-pager">
+      <nav class="ch-pager" aria-label="Chapter navigation">
         {prev ? (
           <a href={`/chapters/${slugOf(prev.data.order)}`} class="pager-item prev">
             <span class="pager-label byline">← Previous</span>
@@ -107,11 +119,27 @@ const epigraph = entry.data.epigraph;
       </div>
     </article>
   </main>
+  <script>
+    import('../../scripts/infinite-scroll.ts');
+  </script>
 </Base>
 
 <style>
   .chapter-main {
     padding: 2.4rem 0 5rem;
+  }
+  .chapter-article + .chapter-article {
+    margin-top: 4.5rem;
+    padding-top: 0;
+    position: relative;
+  }
+  .chapter-article + .chapter-article::before {
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 1px;
+    background: var(--border-strong);
+    margin: 0 auto 2.5rem;
   }
   .ch-head {
     margin-bottom: 2.8rem;
@@ -209,10 +237,27 @@ const epigraph = entry.data.epigraph;
     background: var(--accent-soft);
   }
 
+  /* When JS-driven endless scroll is active, hide per-chapter pager/back to
+     avoid duplication mid-stream. The very last chapter still benefits from
+     its "已是终章" pager — handled via :last-of-type below. */
+  :global(html.js-stream) .chapter-article .ch-pager,
+  :global(html.js-stream) .chapter-article .back-row { display: none; }
+  :global(html.js-stream) .chapter-article:last-of-type .ch-pager,
+  :global(html.js-stream) .chapter-article:last-of-type .back-row { display: grid; }
+  :global(html.js-stream) .chapter-article:last-of-type .back-row { display: block; }
+
+  .scroll-sentinel {
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+  }
+
   @media (max-width: 640px) {
     .chapter-main { padding: 1.4rem 0 3rem; }
     .ch-head { margin-bottom: 2rem; }
     .ch-pager { grid-template-columns: 1fr; }
     .pager-item.next { text-align: left; }
+    .chapter-article + .chapter-article { margin-top: 3rem; }
+    .chapter-article + .chapter-article::before { margin-bottom: 1.8rem; }
   }
 </style>
