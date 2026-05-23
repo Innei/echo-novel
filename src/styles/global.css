@@ -193,6 +193,8 @@ button {
 
 .prose p.has-drop-cap {
   text-indent: 0;
+  display: flow-root;
+  min-height: 3em;
 }
 
 .prose p.has-drop-cap::first-letter {
