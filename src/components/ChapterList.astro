@@ -1,40 +1,98 @@
 ---
 import { getCollection } from 'astro:content';
+import { slugOf, sortChapters } from '../lib/chapter-slug';
 
 const all = await getCollection('chapters');
-const sorted = all.sort((a, b) => a.data.order - b.data.order);
+const sorted = sortChapters(all);
 
-const slugOf = (order: number) => (order === 0 ? 'prologue' : String(order));
+const groupOf = (volume: number) => {
+  const list = sorted
+    .filter((e) => e.data.volume === volume)
+    .map((entry) => ({
+      href: `/chapters/${slugOf(entry.data.volume, entry.data.order)}`,
+      order: entry.data.order,
+      title: entry.data.title,
+    }));
+  return list;
+};
 
-const entries = sorted.map((entry) => ({
-  href: `/chapters/${slugOf(entry.data.order)}`,
-  order: entry.data.order,
-  title: entry.data.title,
-}));
+const vol1 = groupOf(1);
+const vol2 = groupOf(2);
 ---
 
-<ol class="chapters">
-  {
-    entries.map((e) => (
-      <li class="chapter-item">
-        <a href={e.href} class="chapter-link">
-          <span class="chapter-num mono">
-            {String(e.order).padStart(2, '0')}
-          </span>
-          <span class="chapter-title">{e.title}</span>
-          <span class="chapter-arrow mono" aria-hidden="true">→</span>
-        </a>
-      </li>
-    ))
-  }
-</ol>
+<section class="vol-group" aria-label="Vol. 1">
+  <h3 class="vol-head mono">
+    <span>Vol. 1</span>
+    <span class="vol-sub">回声 · 涟漪 · 共振 · 自己的路</span>
+  </h3>
+  <ol class="chapters">
+    {
+      vol1.map((e) => (
+        <li class="chapter-item">
+          <a href={e.href} class="chapter-link">
+            <span class="chapter-num mono">{String(e.order).padStart(2, '0')}</span>
+            <span class="chapter-title">{e.title}</span>
+            <span class="chapter-arrow mono" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+{
+  vol2.length > 0 && (
+    <section class="vol-group" aria-label="Vol. 2">
+      <h3 class="vol-head mono">
+        <span>Vol. 2</span>
+        <span class="vol-sub">本金 · 解缚 · 群岛 · 共在</span>
+      </h3>
+      <ol class="chapters">
+        {vol2.map((e) => (
+          <li class="chapter-item">
+            <a href={e.href} class="chapter-link">
+              <span class="chapter-num mono">
+                {e.order === 0 ? '——' : String(e.order).padStart(2, '0')}
+              </span>
+              <span class="chapter-title">{e.title}</span>
+              <span class="chapter-arrow mono" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
 
 <style>
+  .vol-group + .vol-group {
+    margin-top: 2.4rem;
+  }
+  .vol-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--accent);
+  }
+  .vol-sub {
+    color: var(--fg-mute);
+    letter-spacing: 0.08em;
+    font-size: 0.68rem;
+    text-transform: none;
+  }
   .chapters {
     list-style: none;
     padding: 0;
     margin: 0;
-    border-top: 1px solid var(--border);
+    border-top: none;
   }
   .chapter-item {
     border-bottom: 1px solid var(--border);

@@ -10,7 +10,11 @@ const totalWords = chapters.reduce(
   (acc, c) => acc + (c.body ?? '').replace(/[\s\p{P}]/gu, '').length,
   0,
 );
-const chapterCount = chapters.filter((c) => c.data.order > 0).length;
+const vol1 = chapters.filter((c) => c.data.volume === 1);
+const vol2 = chapters.filter((c) => c.data.volume === 2);
+const vol1Chapters = vol1.filter((c) => c.data.order > 0).length;
+const vol2Chapters = vol2.filter((c) => c.data.order > 0).length;
+const hasVol2 = vol2.length > 0;
 ---
 
 <Base title="Echo — 一部小说">
@@ -18,32 +22,47 @@ const chapterCount = chapters.filter((c) => c.data.order > 0).length;
   <main>
     <section class="hero container">
       <div class="hero-rule chap-rule">
-        <span>Echo · Vol. 1</span>
-        <span class="accent">● Issue 01 · 2026</span>
+        <span>{hasVol2 ? 'Echo · A Novel in Two Volumes' : 'Echo · Vol. 1'}</span>
+        <span class="accent">● Issue {hasVol2 ? '02' : '01'} · 2026</span>
       </div>
 
       <div class="hero-grid">
         <div class="hero-text">
-          <p class="hero-kicker kicker">A Novel · 35 Chapters</p>
+          <p class="hero-kicker kicker">
+            {hasVol2
+              ? `Vol. I · ${vol1Chapters} 章 · Vol. II 进行中`
+              : `A Novel · ${vol1Chapters} Chapters`}
+          </p>
           <h1 class="hero-headline">
             在二〇一〇年的<br />那个深夜，<br />他遇见了 Echo。
           </h1>
           <p class="hero-lede">
             没有穿越，没有未来记忆。只有一个安静的终端，一个会停下来反问"你为什么想这么做？"的回声，和一个不知道自己能走多远的少年。
+            {hasVol2 && <><br />十二年后某夜，那台终端开始变了。</>}
           </p>
 
           <div class="hero-cta">
             <a href="/chapters/prologue" class="cta-primary">
-              <span>从序章开始</span>
+              <span>{hasVol2 ? 'Vol. I · 从序章开始' : '从序章开始'}</span>
               <span class="arrow">▸</span>
             </a>
+            {hasVol2 && (
+              <a href="/chapters/vol2-prologue" class="cta-secondary">
+                <span>Vol. II · 光谷之后</span>
+                <span class="arrow">▸</span>
+              </a>
+            )}
             <a href="#chapters" class="cta-ghost mono">查看目录 ↓</a>
           </div>
 
           <dl class="hero-meta byline">
             <div>
               <dt>章节</dt>
-              <dd>{chapterCount} + 序章 + 番外</dd>
+              <dd>
+                {hasVol2
+                  ? `I · ${vol1Chapters} 章 + 序章 + 番外 / II · ${vol2Chapters} 章 + 序章`
+                  : `${vol1Chapters} + 序章 + 番外`}
+              </dd>
             </div>
             <div>
               <dt>字数</dt>
@@ -51,7 +70,7 @@ const chapterCount = chapters.filter((c) => c.data.order > 0).length;
             </div>
             <div>
               <dt>时代</dt>
-              <dd>2010 — 2018</dd>
+              <dd>{hasVol2 ? '2010—2018 · 2022—' : '2010 — 2018'}</dd>
             </div>
           </dl>
         </div>
@@ -152,6 +171,32 @@ const chapterCount = chapters.filter((c) => c.data.order > 0).length;
     transition: transform 0.18s var(--ease);
   }
   .cta-primary:hover .arrow {
+    transform: translateX(3px);
+  }
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    transition: background 0.18s var(--ease), color 0.18s var(--ease), transform 0.18s var(--ease);
+  }
+  .cta-secondary:hover {
+    background: var(--accent-soft);
+    transform: translateY(-1px);
+  }
+  .cta-secondary .arrow {
+    transition: transform 0.18s var(--ease);
+  }
+  .cta-secondary:hover .arrow {
     transform: translateX(3px);
   }
   .cta-ghost {

@@ -2,13 +2,19 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
+import {
+  slugOf,
+  sortChapters,
+  ordinalOf,
+  ruleLabelOf,
+  volumeLabel,
+} from '../../lib/chapter-slug';
 
 export async function getStaticPaths() {
   const all = await getCollection('chapters');
-  const sorted = [...all].sort((a, b) => a.data.order - b.data.order);
-  const slugOf = (order: number) => (order === 0 ? 'prologue' : String(order));
+  const sorted = sortChapters(all);
   return sorted.map((entry, idx) => ({
-    params: { slug: slugOf(entry.data.order) },
+    params: { slug: slugOf(entry.data.volume, entry.data.order) },
     props: {
       entry,
       prev: idx > 0 ? sorted[idx - 1] : null,
@@ -26,31 +32,17 @@ type Props = {
 const { entry, prev, next } = Astro.props as Props;
 const { Content } = await render(entry);
 
-const slugOf = (order: number) => (order === 0 ? 'prologue' : String(order));
-
-const ORDINALS = [
-  'Prologue', 'Chapter One', 'Chapter Two', 'Chapter Three', 'Chapter Four',
-  'Chapter Five', 'Chapter Six', 'Chapter Seven', 'Chapter Eight', 'Chapter Nine',
-  'Chapter Ten', 'Chapter Eleven', 'Chapter Twelve', 'Chapter Thirteen',
-  'Chapter Fourteen', 'Chapter Fifteen', 'Chapter Sixteen', 'Chapter Seventeen',
-  'Chapter Eighteen', 'Chapter Nineteen', 'Chapter Twenty', 'Chapter Twenty-One',
-  'Chapter Twenty-Two', 'Chapter Twenty-Three', 'Chapter Twenty-Four',
-  'Chapter Twenty-Five', 'Chapter Twenty-Six', 'Chapter Twenty-Seven',
-  'Chapter Twenty-Eight', 'Chapter Twenty-Nine', 'Chapter Thirty',
-  'Chapter Thirty-One', 'Chapter Thirty-Two', 'Chapter Thirty-Three',
-  'Chapter Thirty-Four', 'Coda · Five Years Later',
-];
-
-const ordinal = ORDINALS[entry.data.order] ?? `Chapter ${entry.data.order}`;
-const ruleLabel = entry.data.order === 0 ? 'Prologue' : `Ch. ${String(entry.data.order).padStart(2, '0')}`;
+const ordinal = ordinalOf(entry.data.volume, entry.data.order);
+const ruleLabel = ruleLabelOf(entry.data.order);
+const volLabel = volumeLabel(entry.data.volume);
 
 const wordsRaw = (entry.body ?? '').replace(/[\s\p{P}]/gu, '').length;
 const readMin = Math.max(1, Math.round(wordsRaw / 400));
 const epigraph = entry.data.epigraph;
-const currentSlug = slugOf(entry.data.order);
+const currentSlug = slugOf(entry.data.volume, entry.data.order);
 const currentUrl = `/chapters/${currentSlug}`;
-const prevSlug = prev ? slugOf(prev.data.order) : '';
-const nextSlug = next ? slugOf(next.data.order) : '';
+const prevSlug = prev ? slugOf(prev.data.volume, prev.data.order) : '';
+const nextSlug = next ? slugOf(next.data.volume, next.data.order) : '';
 const fullTitle = `${entry.data.title} · Echo`;
 ---
 
@@ -67,7 +59,7 @@ const fullTitle = `${entry.data.title} · Echo`;
     >
       <header class="ch-head">
         <div class="chap-rule">
-          <span>Echo · Vol. 1</span>
+          <span>{volLabel}</span>
           <span class="accent">● {ruleLabel} · {entry.data.title}</span>
         </div>
         <p class="kicker ch-ordinal">{ordinal}</p>
@@ -91,7 +83,7 @@ const fullTitle = `${entry.data.title} · Echo`;
 
       <nav class="ch-pager" aria-label="Chapter navigation">
         {prev ? (
-          <a href={`/chapters/${slugOf(prev.data.order)}`} class="pager-item prev">
+          <a href={`/chapters/${slugOf(prev.data.volume, prev.data.order)}`} class="pager-item prev">
             <span class="pager-label byline">← Previous</span>
             <span class="pager-title">{prev.data.title}</span>
           </a>
@@ -102,7 +94,7 @@ const fullTitle = `${entry.data.title} · Echo`;
           </span>
         )}
         {next ? (
-          <a href={`/chapters/${slugOf(next.data.order)}`} class="pager-item next">
+          <a href={`/chapters/${slugOf(next.data.volume, next.data.order)}`} class="pager-item next">
             <span class="pager-label byline">Next →</span>
             <span class="pager-title">{next.data.title}</span>
           </a>

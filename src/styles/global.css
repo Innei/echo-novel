@@ -373,6 +373,15 @@ html[data-theme='dark'] .astro-code span {
   padding-left: 1.6em;
 }
 
+.chat-line--cmd {
+  color: var(--fg);
+}
+
+.chat-line--output {
+  color: var(--fg-mute);
+  padding-left: 1.5em;
+}
+
 /* utilities */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

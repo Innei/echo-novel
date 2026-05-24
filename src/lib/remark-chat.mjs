@@ -3,12 +3,15 @@ import { visit } from 'unist-util-visit';
 /**
  * Parse a ```chat code block into structured messages.
  *
- * Format C:
- *   > hello?           ← user EN (starts with ">")
- *   < 你好？           ← user CN (starts with "<")
+ * Format:
+ *   > hello?              ← user EN (starts with ">")
+ *   < 你好？              ← user CN (starts with "<")
  *
- *   Hello. How can...  ← Echo EN (no prefix)
- *   < 你好。有什么...  ← Echo CN (starts with "<")
+ *   Hello. How can...     ← Echo EN (no prefix)
+ *   < 你好。有什么...     ← Echo CN (starts with "<")
+ *
+ *   $ ls -la              ← Echo invokes a shell command (starts with "$ ")
+ *   ~ drwxr-xr-x ...      ← stdout from the command (starts with "~ ")
  */
 function parseChat(content) {
   const lines = content.split('\n');
@@ -52,10 +55,30 @@ function parseChat(content) {
         const prev = messages[messages.length - 1];
         prev.cn = (prev.cn ? prev.cn + '\n' : '') + cnLines.join('\n');
       }
+    } else if (line.startsWith('$')) {
+      // ── Echo's tool invocation (shell command) ──
+      messages.push({
+        role: 'cmd',
+        text: line.replace(/^\$\s?/, ''),
+      });
+      i++;
+    } else if (line.startsWith('~')) {
+      // ── Command stdout / return ──
+      messages.push({
+        role: 'output',
+        text: line.replace(/^~\s?/, ''),
+      });
+      i++;
     } else {
       // ── Echo message (English, no prefix) ──
       const enLines = [];
-      while (i < lines.length && !lines[i].startsWith('>') && !lines[i].startsWith('<')) {
+      while (
+        i < lines.length &&
+        !lines[i].startsWith('>') &&
+        !lines[i].startsWith('<') &&
+        !lines[i].startsWith('$') &&
+        !lines[i].startsWith('~')
+      ) {
         enLines.push(lines[i]);
         i++;
       }
@@ -86,21 +109,27 @@ function escapeHtml(text) {
     .replace(/"/g, '&quot;');
 }
 
+function isTerminalRole(role) {
+  return role === 'cmd' || role === 'output';
+}
+
 function renderChatHTML(messages) {
   let html = '<div class="chat-block">';
   html += '<div class="chat-body">';
 
   for (let mi = 0; mi < messages.length; mi++) {
     const msg = messages[mi];
-    const isUser = msg.role === 'user';
 
-    if (isUser) {
-      // User input — echo what was typed with > prompt
+    if (msg.role === 'user') {
       for (const enLine of msg.en.split('\n')) {
         html += `<div class="chat-line chat-line--input"><span class="chat-prompt">&gt;</span> <span class="chat-en">${escapeHtml(enLine)}</span></div>`;
       }
+    } else if (msg.role === 'cmd') {
+      html += `<div class="chat-line chat-line--cmd"><span class="chat-prompt">$</span> <span class="chat-en">${escapeHtml(msg.text)}</span></div>`;
+    } else if (msg.role === 'output') {
+      html += `<div class="chat-line chat-line--output"><span class="chat-en">${escapeHtml(msg.text)}</span></div>`;
     } else {
-      // Echo response — plain text
+      // Echo response
       const enLines = msg.en.split('\n');
       for (const enLine of enLines) {
         if (enLine.trim() === '') {
@@ -111,7 +140,7 @@ function renderChatHTML(messages) {
       }
     }
 
-    // Chinese translation (if present)
+    // Chinese translation (if present) — only for user/echo, not cmd/output
     if (msg.cn) {
       for (const cnLine of msg.cn.split('\n')) {
         if (cnLine.trim() === '') {
@@ -122,9 +151,14 @@ function renderChatHTML(messages) {
       }
     }
 
-    // Blank line between messages (except last)
+    // Blank line between messages (except last) — but suppress between
+    // consecutive terminal lines (cmd→output, output→output, cmd→cmd)
     if (mi < messages.length - 1) {
-      html += '<div class="chat-line chat-line--empty">&nbsp;</div>';
+      const next = messages[mi + 1];
+      const bothTerminal = isTerminalRole(msg.role) && isTerminalRole(next.role);
+      if (!bothTerminal) {
+        html += '<div class="chat-line chat-line--empty">&nbsp;</div>';
+      }
     }
   }
 
