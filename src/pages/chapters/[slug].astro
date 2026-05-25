@@ -47,13 +47,14 @@ const fullTitle = `${entry.data.title} · Echo`;
 ---
 
 <Base title={entry.data.title} pageType="chapter" description={entry.data.title}>
-  <Nav variant="chapter" />
+  <Nav variant="chapter" volume={entry.data.volume} />
   <main class="chapter-main">
     <article
       class="chapter-article container read-width"
       data-slug={currentSlug}
       data-url={currentUrl}
       data-title={fullTitle}
+      data-volume={entry.data.volume}
       data-prev-slug={prevSlug || undefined}
       data-next-slug={nextSlug || undefined}
     >

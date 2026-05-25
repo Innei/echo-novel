@@ -1,8 +1,10 @@
 ---
 interface Props {
   variant?: 'home' | 'chapter';
+  volume?: number;
 }
-const { variant = 'home' } = Astro.props;
+const { variant = 'home', volume = 1 } = Astro.props;
+const volLabel = `Vol. ${volume}`;
 ---
 
 <nav class="nav">
@@ -10,7 +12,7 @@ const { variant = 'home' } = Astro.props;
     <a href="/" class="brand">
       <span class="brand-mark">ECHO</span>
       <span class="brand-sep">─</span>
-      <span class="brand-vol mono">Vol. 1</span>
+      <span class="brand-vol mono" data-vol-label>{volLabel}</span>
     </a>
     <div class="nav-actions">
       {variant === 'chapter' && (

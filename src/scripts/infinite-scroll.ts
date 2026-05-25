@@ -43,6 +43,7 @@ const sentinelIo = new IntersectionObserver((entries) => {
   }
 }, sentinelOpts);
 
+const volLabelEl = document.querySelector<HTMLElement>('[data-vol-label]');
 const urlIo = new IntersectionObserver((entries) => {
   const visible = entries
     .filter((e) => e.isIntersecting)
@@ -52,9 +53,14 @@ const urlIo = new IntersectionObserver((entries) => {
   if (!top) return;
   const url = top.dataset.url;
   const title = top.dataset.title;
+  const volume = top.dataset.volume;
   if (url && location.pathname !== url) {
     history.replaceState(null, '', url);
     if (title) document.title = title;
+  }
+  if (volLabelEl && volume) {
+    const next = `Vol. ${volume}`;
+    if (volLabelEl.textContent !== next) volLabelEl.textContent = next;
   }
 }, { rootMargin: '-20% 0px -60% 0px' });
 
